@@ -7,4 +7,13 @@ const getAllQuestions = async () => {
   return result;
 };
 
-module.exports = { getAllQuestions };
+const getAllQuestionsByUserId = async (userId) => {
+  const result = await Question.findAll({
+    where: {
+      user_id: userId,
+    },
+  });
+  return result;
+};
+
+module.exports = { getAllQuestions, getAllQuestionsByUserId };
