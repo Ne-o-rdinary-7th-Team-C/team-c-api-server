@@ -14,7 +14,14 @@ const handleGetMainPageCalendarEvents = async (req, res) => {
 
 const handleGetMessageByUserIdAndDate = async (req, res) => {
   // TODO
-  const date = req.query.date;
+  const { date } = req.params;
+  const dateRegex = /^(19|20)\d\d(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
+  if (!dateRegex.test(date)) {
+    logger.error(`Invalid date format: ${date}`);
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Use YYYYMMDD." });
+  }
   const formattedDate = new Date(date).toISOString().split("T")[0];
   const result = await getQuestionByUserIdAndDate(
     req.user.user_id,
@@ -24,4 +31,7 @@ const handleGetMessageByUserIdAndDate = async (req, res) => {
   res.status(200).json(result);
 };
 
-module.exports = { handleGetMainPageCalendarEvents };
+module.exports = {
+  handleGetMainPageCalendarEvents,
+  handleGetMessageByUserIdAndDate,
+};

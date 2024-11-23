@@ -6,36 +6,20 @@ const morgan = require("morgan");
 
 const cookieParser = require("cookie-parser");
 
-const { PORT, JWT_SECRET } = require("./config.json");
+const { PORT } = require("./config.json");
+const {
+  errorHandler,
+  responseHandler,
+  parseBearerFromHeader,
+  decodeToken,
+} = require("./handlers");
 
 const questionRouter = require("./routes/question.router");
 
 const app = express();
 const jwt = require("jsonwebtoken");
 
-const parseBearerFromHeader = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-    req.token = token;
-    logger.info(`Parsed token: ${token}`);
-  }
-  next();
-};
-
-const decodeToken = (req, res, next) => {
-  const token = req.token;
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = decoded;
-      logger.info(`Decoded token: ${JSON.stringify(decoded, 2)}`);
-    } catch (error) {
-      logger.error(`Token decoding error: ${error.message}`);
-    }
-  }
-  next();
-};
+app.use(responseHandler);
 
 app.use(cors());
 app.use(express.json());
@@ -47,6 +31,9 @@ app.use(decodeToken);
 
 app.use("/questions", questionRouter);
 
+// Error handler는 최하단에 위치해야 합니다.
+// 하단 코드를 건들지 마세요.
+app.use(errorHandler);
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
 });
