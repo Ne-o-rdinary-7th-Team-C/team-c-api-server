@@ -38,4 +38,16 @@ const registerUser = async (data) => {
   return user;
 };
 
-module.exports = { registerUser, validateId };
+const updateUser = async (data) => {
+  //data => {userId,color,nickname}
+  const user = await userRepository.getUserById(data.userId);
+
+  if (!user) {
+    throw new Error("존재하지 않는 유저입니다");
+  }
+  const updatedUser = await userRepository.updateUser(data);
+
+  return updatedUser;
+};
+
+module.exports = { registerUser, validateId, updateUser };

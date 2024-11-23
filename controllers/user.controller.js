@@ -1,5 +1,10 @@
-const { validateId, registerUser } = require("../services/user.service");
+const {
+  validateId,
+  registerUser,
+  updateUser,
+} = require("../services/user.service");
 
+//로그인 ID 중복 확인 컨트롤러
 const validateIdController = async (req, res) => {
   console.log("validateIdController 실행됨");
 
@@ -14,6 +19,7 @@ const validateIdController = async (req, res) => {
   }
 };
 
+//회원가입 컨트롤러
 const registerUserController = async (req, res) => {
   console.log("registerUserController 실행됨");
 
@@ -28,4 +34,23 @@ const registerUserController = async (req, res) => {
   }
 };
 
-module.exports = { registerUserController, validateIdController };
+//별명 및 색상 설정 컨트롤러
+const updateUserController = async (req, res) => {
+  console.log("updateUserController 실행됨");
+  const userId = req.user.user_id;
+  const { color, nickname } = req.body;
+  try {
+    //response에는 업데이트한 user가 담김
+    const response = await updateUser({ userId, color, nickname });
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error });
+  }
+};
+
+module.exports = {
+  registerUserController,
+  validateIdController,
+  updateUserController,
+};

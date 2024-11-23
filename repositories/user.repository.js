@@ -33,4 +33,15 @@ const getUserByLoginId = async (id) => {
   return existingUser;
 };
 
-module.exports = { addUser, getUserById, getUserByLoginId };
+const updateUser = async (data) => {
+  //data => userId, color ,nickname
+  const { userId, color, nickname } = data;
+  const updatedUser = await User.update(
+    { color, nickname },
+    { where: { user_id: userId } }
+  );
+
+  return updatedUser;
+};
+
+module.exports = { addUser, getUserById, getUserByLoginId, updateUser };
