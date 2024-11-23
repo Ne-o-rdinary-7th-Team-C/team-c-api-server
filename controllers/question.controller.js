@@ -62,7 +62,8 @@ const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
 //7 답변 쓰기
 const handleAddAnswer = async (req, res, next) => {
   const { question_id } = req.params;
-  const { questioned_user_id, content } = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
+  const { content } = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
+  const questioned_user_id = req.user.user_id; // 현재 로그인한 사용자의 ID
 
   try {
     const answer = await addAnswerService(
