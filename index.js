@@ -1,11 +1,11 @@
+// 외부 패키지
 const express = require("express");
 const cors = require("cors");
-const logger = require("./logger");
-
 const morgan = require("morgan");
-
 const cookieParser = require("cookie-parser");
-const userRouter = require("./routes/user.route");
+
+// 프로젝트 내부 패키지
+const logger = require("./logger");
 const { PORT } = require("./config.json");
 const {
   errorHandler,
@@ -14,21 +14,20 @@ const {
   decodeToken,
 } = require("./handlers");
 
+// 라우터
+const userRouter = require("./routes/user.route");
 const questionRouter = require("./routes/question.router");
 
 const app = express();
 
 app.use(responseHandler); //  요청, 응답 핸들링 미들웨어
-
-app.use(responseHandler);
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(morgan("dev"));
-app.use(parseBearerFromHeader);
-app.use(decodeToken);
+app.use(morgan("dev")); // morgan logger
+app.use(parseBearerFromHeader); // 헤더에서 token 분리, req.token에 저장
+app.use(decodeToken); // req.token을 해독하여 req.user에 저장
 
 app.use("/questions", questionRouter);
 app.use("/user", userRouter);

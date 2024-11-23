@@ -3,20 +3,21 @@ const { User } = require("../models/index");
 const addUser = async (newUser) => {
   const createdUser = await User.create(newUser);
 
-  return createdUser.user_id;
+  return createdUser;
 };
 
-const getUserById = async (id) => {
-  const user = await User.findByPk(id, {
-    attributes: { exclude: ["password"] },
-  });
+// const getUserById = async (id) => {
+//   const user = await User.findByPk(id, {
+//     attributes: { exclude: ["password"] },
+//   });
 
-  if (!user) {
-    return null;
-  }
+//   if (!user) {
+//     return null;
+//   }
 
-  return user;
-};
+//   return user;
+// };
+// 안쓰는 함수
 
 const getUserByLoginId = async (id) => {
   const existingUser = await User.findOne({
@@ -30,14 +31,13 @@ const updateUser = async (data) => {
   //data => userId, color ,nickname
   const { userId, color, nickname } = data;
 
-  await User.update({ color, nickname }, { where: { user_id: userId } });
+  const [affectedCount, affectedRows] = await User.update(
+    { color, nickname },
+    { where: { user_id: userId } }
+  );
 
-  const updatedUser = await User.findOne({
-    where: { user_id: userId },
-    attributes: { exclude: ["password"] },
-  });
-
-  return updatedUser;
+  // 영향을 받은 행의 수를 리턴
+  return affectedCount;
 };
 
 const findByLoginId = async (login_id) => {
@@ -52,7 +52,6 @@ module.exports = {
   findByLoginId,
   findNicknameById,
   addUser,
-  getUserById,
   getUserByLoginId,
   updateUser,
 };
