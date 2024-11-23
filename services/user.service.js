@@ -1,10 +1,11 @@
+const UserLoginRepository = require('../repositories/user.repository');
 const UserRepository = require('../repositories/user.repository');
 const bcrypt = require('bcrypt'); // bcrypt 사용
 
-class UserService {
+class UserLoginService {
   static async login(login_id, password) {
     // login_id로 사용자 검색
-    const user = await UserRepository.findByLoginId(login_id);
+    const user = await UserLoginRepository.findByLoginId(login_id);
 
     if (!user) {
       return null; // 사용자 없음
@@ -22,4 +23,4 @@ class UserService {
   }
 }
 
-module.exports = UserService;
+module.exports = UserLoginService;

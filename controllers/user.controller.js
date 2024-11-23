@@ -1,6 +1,7 @@
-const UserService = require('../services/user.service');
+const UserLoginService = require('../services/user.service');
+const UserGetService = require('../services/user.service');
 
-class UserController {
+class UserLoginController {
     static async login(req, res) {
       console.log("Request body:", req.body); // 요청 바디를 출력
       const { login_id, password } = req.body;
@@ -18,7 +19,7 @@ class UserController {
       }
   
       try {
-        const user = await UserService.login(login_id, password);
+        const user = await UserLoginService.login(login_id, password);
   
         if (user) {
           res.json({
@@ -54,7 +55,17 @@ class UserController {
         });
       }
     }
-  }
-  
+}
 
-module.exports = UserController;
+
+
+
+
+
+
+
+
+  
+module.exports = UserLoginController;
+
+
