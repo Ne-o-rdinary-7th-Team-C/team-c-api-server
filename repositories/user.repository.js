@@ -25,4 +25,12 @@ const getUserById = async (id) => {
   return user;
 };
 
-module.exports = { addUser, getUserById };
+const getUserByLoginId = async (id) => {
+  const existingUser = await User.findOne({
+    where: { login_id: id },
+  });
+
+  return existingUser;
+};
+
+module.exports = { addUser, getUserById, getUserByLoginId };
