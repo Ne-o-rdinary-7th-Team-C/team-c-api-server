@@ -1,38 +1,60 @@
-const UserLoginService = require('../services/user.service');
+const UserService = require('../services/user.service');
 
-const UserLoginController = {
-  login: async (req, res) => {
-    const { login_id, password } = req.body;
-
-    try {
-      const response = await UserLoginService.login(login_id, password);
-
-      // 로그인 성공 응답
-      res.status(200).json({
-        resultType: "SUCCESS",
-        error: null,
-        success: {
-          message: "Login successful",
-          userId: response.userId, // 로그인된 사용자 ID
-          nickname: response.nickname, // 닉네임
-          token: response.token, // JWT 토큰
-        },
-      });
-    } catch (error) {
-      // 로그인 실패 응답
-      res.status(401).json({
-        resultType: "FAIL",
-        error: {
-          errorCode: "A100", // 로그인 실패 오류 코드
-          reason: error.message, // 오류 원인
-          data: {
-            login_id: login_id, // 시도된 로그인 ID (보안상의 이유로 조심스럽게 사용)
+class UserController {
+    static async login(req, res) {
+      console.log("Request body:", req.body); // 요청 바디를 출력
+      const { login_id, password } = req.body;
+  
+      if (!login_id || !password) {
+        return res.status(400).json({
+          resultType: "FAIL",
+          error: {
+            errorCode: "A400",
+            reason: "login_id and password are required",
+            data: {},
           },
-        },
-        success: null,
-      });
+          success: null,
+        });
+      }
+  
+      try {
+        const user = await UserService.login(login_id, password);
+  
+        if (user) {
+          res.json({
+            resultType: "SUCCESS",
+            error: null,
+            success: {
+              user_id: user.user_id,
+              nickname: user.nickname,
+              color: user.color,
+            },
+          });
+        } else {
+          res.status(401).json({
+            resultType: "FAIL",
+            error: {
+              errorCode: "A100",
+              reason: "Invalid credentials",
+              data: {},
+            },
+            success: null,
+          });
+        }
+      } catch (error) {
+        console.error("Internal Server Error:", error); // 에러 로그 출력
+        res.status(500).json({
+          resultType: "FAIL",
+          error: {
+            errorCode: "A500",
+            reason: "Internal Server Error",
+            data: { message: error.message },
+          },
+          success: null,
+        });
+      }
     }
-  },
-};
+  }
+  
 
-module.exports = UserLoginController;
+module.exports = UserController;

@@ -1,29 +1,25 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const UserLoginRepository = require('../repositories/user.repository');
+const UserRepository = require('../repositories/user.repository');
+const bcrypt = require('bcrypt'); // bcrypt 사용
 
-
-const UserLoginService = {
-  login: async (email, password) => {
-    const user = await UserLoginRepository.getUserByEmail(email);
+class UserService {
+  static async login(login_id, password) {
+    // login_id로 사용자 검색
+    const user = await UserRepository.findByLoginId(login_id);
 
     if (!user) {
-      throw new Error('이용자를 찾을 수 없습니다'); 
+      return null; // 사용자 없음
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);//해싱 
+    // 입력된 비밀번호와 저장된 해시된 비밀번호 비교
+    const isPasswordValid = bcrypt.compareSync(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error('맞지 않는 비밀번호 입니다');
+      return null; // 비밀번호 불일치
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, 'your_secret_key', {
-      expiresIn: '1h',// 세션 만료
-    });
+    // 로그인 성공 시 사용자 반환
+    return user;
+  }
+}
 
-    return { message: '로그인 성공', token };//로그인 완료 
-  },
-};
-
-
-module.exports = UserLoginService;
+module.exports = UserService;
