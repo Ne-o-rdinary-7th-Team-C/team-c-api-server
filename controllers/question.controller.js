@@ -34,6 +34,7 @@ const handleGetMessageByUserIdAndDate = async (req, res, next) => {
     req.user.user_id,
     formattedDate
   );
+
   logger.info(`Get question by user id and date: ${JSON.stringify(result)}`);
   res.status(200).success(result);
 };
