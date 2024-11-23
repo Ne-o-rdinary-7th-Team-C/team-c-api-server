@@ -6,5 +6,6 @@ const {
 const router = express.Router();
 
 router.get("", handleGetMainPageCalendarEvents);
+router.get();
 
 module.exports = router;

@@ -16,4 +16,18 @@ const getAllQuestionsByUserId = async (userId) => {
   return result;
 };
 
-module.exports = { getAllQuestions, getAllQuestionsByUserId };
+const getQuestionByUserIdAndDate = async (userId, date) => {
+  const result = await Question.findOne({
+    where: {
+      user_id: userId,
+      assigned_date: date,
+    },
+  });
+  return result;
+};
+
+module.exports = {
+  getAllQuestions,
+  getAllQuestionsByUserId,
+  getQuestionByUserIdAndDate,
+};
