@@ -16,7 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-app.use("/question", require("./routes/user"));
+
+app.use("/questions", require("./routes/questionRouter"));
 
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
