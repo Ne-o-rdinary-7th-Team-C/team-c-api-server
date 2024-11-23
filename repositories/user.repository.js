@@ -1,13 +1,6 @@
 const { User } = require("../models/index");
 
 const addUser = async (newUser) => {
-  const existingUser = await User.findOne({
-    where: { login_id: newUser.login_id },
-  });
-
-  if (existingUser) {
-    return null;
-  }
   const createdUser = await User.create(newUser);
 
   return createdUser.user_id;
@@ -36,10 +29,13 @@ const getUserByLoginId = async (id) => {
 const updateUser = async (data) => {
   //data => userId, color ,nickname
   const { userId, color, nickname } = data;
-  const updatedUser = await User.update(
-    { color, nickname },
-    { where: { user_id: userId } }
-  );
+
+  await User.update({ color, nickname }, { where: { user_id: userId } });
+
+  const updatedUser = await User.findOne({
+    where: { user_id: userId },
+    attributes: { exclude: ["password"] },
+  });
 
   return updatedUser;
 };
