@@ -17,7 +17,6 @@ const {
 const questionRouter = require("./routes/question.router");
 
 const app = express();
-const jwt = require("jsonwebtoken");
 
 app.use(responseHandler);
 

@@ -1,37 +1,51 @@
-const {
-  getAllQuestions,
-  getAllQuestionsByUserId,
-  getQuestionByUserIdAndDate,
-} = require("../repositories/question.repository");
+const { InvalidInputError } = require("../errors");
 const logger = require("../logger");
 
-const handleGetMainPageCalendarEvents = async (req, res) => {
-  // TODO
-  const result = await getAllQuestionsByUserId(req.user.user_id);
-  logger.info(`Get all questions: ${JSON.stringify(result)}`);
-  res.status(200).json(result);
-};
-
-const handleGetMessageByUserIdAndDate = async (req, res) => {
-  // TODO
-  const { date } = req.params;
+const validDate = (date, next) => {
   const dateRegex = /^(19|20)\d\d(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
   if (!dateRegex.test(date)) {
     logger.error(`Invalid date format: ${date}`);
-    return res
-      .status(400)
-      .json({ error: "Invalid date format. Use YYYYMMDD." });
+    next(new InvalidInputError("올바른 날짜 형식이 아닙니다."));
+    return false;
   }
-  const formattedDate = new Date(date).toISOString().split("T")[0];
-  const result = await getQuestionByUserIdAndDate(
-    req.user.user_id,
-    formattedDate
-  );
-  logger.info(`Get question by user id and date: ${JSON.stringify(result)}`);
-  res.status(200).json(result);
+
+  // YYYYMMDD 형식을 YYYY/MM/DD로 변환
+  let formattedDate = `${date.substring(0, 4)}/${date.substring(
+    4,
+    6
+  )}/${date.substring(6, 8)}`;
+
+  // 한국 표준시(KST) 기반으로 날짜 포맷팅
+  formattedDate = new Date(formattedDate)
+    .toLocaleDateString("ko-KR", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\./g, "")
+    .replace(/ /g, "-");
+
+  // 추가적인 유효성 검사 (필요시)
+  const isValidDate = (dateString) => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    return (
+      dateObj.getFullYear() === year &&
+      dateObj.getMonth() + 1 === month &&
+      dateObj.getDate() === day
+    );
+  };
+
+  if (!isValidDate(formattedDate)) {
+    logger.error(`Invalid date: ${formattedDate}`);
+    next(new InvalidInputError("유효하지 않은 날짜입니다."));
+    return false;
+  }
+
+  return formattedDate;
 };
 
 module.exports = {
-  handleGetMainPageCalendarEvents,
-  handleGetMessageByUserIdAndDate,
+  validDate,
 };

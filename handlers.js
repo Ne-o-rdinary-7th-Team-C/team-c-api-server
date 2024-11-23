@@ -44,6 +44,7 @@ const responseHandler = (req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
+    logger.error("Headers already sent. Skip error handling.");
     return next(err);
   }
 

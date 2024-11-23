@@ -1,11 +1,14 @@
 const express = require("express");
 const {
   handleGetMainPageCalendarEvents,
-} = require("../services/question.service");
+  handleGetMessageByUserIdAndDate,
+  handleGetUserQuestionStatusByUserId,
+} = require("../controllers/question.controller");
 
 const router = express.Router();
 
-router.get("", handleGetMainPageCalendarEvents);
-router.get();
+router.get("/", handleGetMainPageCalendarEvents);
+router.get("/view", handleGetUserQuestionStatusByUserId);
+router.get("/:date", handleGetMessageByUserIdAndDate);
 
 module.exports = router;

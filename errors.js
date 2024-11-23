@@ -1,5 +1,6 @@
 export class NotExistError extends Error {
   errorCode = "NOT_EXIST";
+  statusCode = 404;
 
   constructor(reason, data) {
     super(reason);
@@ -10,6 +11,7 @@ export class NotExistError extends Error {
 
 export class AlreadyExistError extends Error {
   errorCode = "ALREADY_EXIST";
+  statusCode = 409;
 
   constructor(reason, data) {
     super(reason);
@@ -20,6 +22,7 @@ export class AlreadyExistError extends Error {
 
 export class InvalidInputError extends Error {
   errorCode = "INVALID_INPUT";
+  statusCode = 400;
 
   constructor(reason, data) {
     super(reason);
