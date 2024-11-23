@@ -18,19 +18,20 @@ const addAnswer = async (req, res) => {
 //밥먹고와서 여기부터
 
 
-//질문 작성
+// 질문 작성
 const addQuestion = async (req, res) => {
-    const {questioned_user_id, author_nickname, assigned_date, content} = req.body;
-    
+    const { questioned_user_id, author_nickname, assigned_date, content } = req.body;
 
-    try{
+    try {
         const question = await questionService.addQuestion(questioned_user_id, author_nickname, assigned_date, content);
-        res.status(201).json(question);
-
-    }catch(error){
-        //에러핸들링
-        
+        // 성공 응답
+        res.success(question);
+    } catch (error) {
+        console.error("Error in addQuestion:", error);
+        // 실패 응답
+        res.error({ reason: error.message });
     }
-}
+};
+
 
 module.exports = { addAnswer, addQuestion };
