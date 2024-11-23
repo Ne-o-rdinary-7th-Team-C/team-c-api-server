@@ -85,7 +85,8 @@ const login = async (req, res, next) => {
 
 const getUserNickname = async (req, res, next) => {
   try {
-    const user_id = req.user?.user_id;
+    let { user_id } = req.params;
+    user_id = parseInt(user_id);
     if (!user_id) return next(new UserNotFoundError());
 
     const user = await getUserNicknameService(user_id);

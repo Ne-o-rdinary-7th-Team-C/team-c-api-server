@@ -21,6 +21,6 @@ router.patch("/register", updateUserController);
 router.post("/login", login);
 
 // 사용자 닉네임을 return 합니다.
-router.get("/", getUserNickname);
+router.get("/:user_id", getUserNickname);
 
 module.exports = router;
