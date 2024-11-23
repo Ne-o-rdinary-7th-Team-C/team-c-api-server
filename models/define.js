@@ -45,7 +45,7 @@ class User extends Model {
   }
 
   static associate(models) {
-    User.hasMany(models.Question, { foreignKey: "user_id" });
+    User.hasMany(models.Question, { foreignKey: "questioned_user_id" });
   }
 }
 
@@ -54,17 +54,26 @@ class Question extends Model {
     super.init(
       {
         question_id: {
+          //해당 질문세트 아이디
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
         },
-        user_id: {
+        questioned_user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "User",
             key: "user_id",
           },
+        },
+        author_nickname: {
+          type: DataTypes.STRING(1024),
+          allowNull: false,
+        },
+        assigned_date: {
+          type: DataTypes.DATEONLY,
+          allowNull: false,
         },
         content: {
           type: DataTypes.STRING(2048),
@@ -90,7 +99,7 @@ class Question extends Model {
   }
 
   static associate(models) {
-    Question.belongsTo(models.User, { foreignKey: "user_id" });
+    Question.belongsTo(models.User, { foreignKey: "questioned_user_id" });
     Question.hasMany(models.Answer, { foreignKey: "question_id" });
   }
 }
@@ -111,10 +120,6 @@ class Answer extends Model {
             model: "Question",
             key: "question_id",
           },
-        },
-        nickname: {
-          type: DataTypes.STRING(1024),
-          allowNull: false,
         },
         content: {
           type: DataTypes.STRING(1024),
