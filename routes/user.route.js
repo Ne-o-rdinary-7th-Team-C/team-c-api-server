@@ -1,10 +1,17 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
+const { login, getUserNickname } = require("../controllers/user.controller");
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.post("/validation", userController.validateIdController);
-userRouter.post("/register", userController.registerUserController);
-userRouter.patch("/register", userController.updateUserController);
+router.post("/validation", userController.validateIdController);
+router.post("/register", userController.registerUserController);
+router.patch("/register", userController.updateUserController);
 
-module.exports = userRouter;
+// POST /user/login
+router.post("/login", login);
+
+// GET /user
+router.get("/", getUserNickname);
+
+module.exports = router;

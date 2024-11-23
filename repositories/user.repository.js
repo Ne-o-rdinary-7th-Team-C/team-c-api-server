@@ -40,4 +40,19 @@ const updateUser = async (data) => {
   return updatedUser;
 };
 
-module.exports = { addUser, getUserById, getUserByLoginId, updateUser };
+const findByLoginId = async (login_id) => {
+  return User.findOne({ where: { login_id } });
+};
+
+const findNicknameById = async (userId) => {
+  return User.findOne({ where: { user_id: userId }, attributes: ["nickname"] });
+};
+
+module.exports = {
+  findByLoginId,
+  findNicknameById,
+  addUser,
+  getUserById,
+  getUserByLoginId,
+  updateUser,
+};
