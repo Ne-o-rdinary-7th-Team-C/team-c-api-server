@@ -59,13 +59,13 @@ const errorHandler = (err, req, res, next) => {
 const swaggerHandler = async (req, res, next) => {
   // #swagger.ignore = true
   const options = {
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     disableLogs: true,
     writeOutputFile: false,
   };
 
   const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
-  const routes = ["./routes/*.js"];
+  const routes = ["./routes/*.js", "./controllers/*.js"];
   const doc = {
     info: {
       title: "Ne(o)rdinary Hackathon: Team C",
