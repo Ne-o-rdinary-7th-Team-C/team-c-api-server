@@ -22,10 +22,7 @@ const answerRouter = require("./routes/answer.route");
 const app = express();
 
 app.use(responseHandler); //  요청, 응답 핸들링 미들웨어
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/add-picture
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

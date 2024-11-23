@@ -30,6 +30,16 @@ class InvalidInputError extends Error {
     this.data = data;
   }
 }
+class FailToUploadError extends Error {
+  errorCode = "UPLOAD_FAILED";
+  statusCode = 503;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
 
 // 기본 에러 클래스
 class BaseError extends Error {
@@ -79,4 +89,5 @@ module.exports = {
   InvalidCredentialsError,
   UserNotFoundError,
   InternalServerError,
+  FailToUploadError,
 };
