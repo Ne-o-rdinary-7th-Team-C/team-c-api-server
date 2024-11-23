@@ -8,6 +8,8 @@ const cookieParser = require("cookie-parser");
 
 const { PORT } = require("./config.json");
 
+const questionRouter = require("./routes/question.router");
+
 const app = express();
 
 app.use(cors());
@@ -16,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-app.use("/question", require("./routes/user"));
+app.use("/questions", questionRouter);
 
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
