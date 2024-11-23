@@ -27,4 +27,10 @@ const getQuestionById = async (id) => {
     return existingQuestion;
 }
 
-module.exports = { createAnswer, createQuestion, getQuestionById };
+const getUserById = async (id) => {
+    const existingUser = await User.findByPk(id);
+
+    return existingUser;
+}
+
+module.exports = { createAnswer, createQuestion, getQuestionById, getUserById };

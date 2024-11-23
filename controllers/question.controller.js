@@ -9,7 +9,7 @@ const addAnswer = async (req, res) => {
         const answer = await questionService.addAnswer(question_id, questioned_user_id, content);
         res.status(201).json(answer);
     } catch (error) {
-        console.log("addQuestion 서비스 오류")
+        
         res.status(400).json({ error: error.message });
     }
 };
