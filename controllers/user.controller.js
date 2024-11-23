@@ -65,7 +65,9 @@ const registerUserController = async (req, res, next) => {
 
 //별명 및 색상 설정 컨트롤러
 const updateUserController = async (req, res, next) => {
-  console.log("updateUserController 실행됨");
+    if(!req.user){
+        return next(new UnauthorizedError("토큰이 없거나 만료되었습니다"))
+    }
   const userId = req.user.user_id;
   const { color, nickname } = req.body;
 
