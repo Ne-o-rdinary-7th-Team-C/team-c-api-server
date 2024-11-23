@@ -10,6 +10,7 @@ const {
   validDate,
   addAnswerService,
   addQuestionService,
+  getQuestionAndAnswerService,
 } = require("../services/question.service");
 
 const handleGetMainPageCalendarEvents = async (req, res) => {
@@ -59,6 +60,19 @@ const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
   res.status(200).success(questionStatus);
 };
 
+const handleGetUserQuestionAnswerByUserIdAndDate = async (req, res, next) => {
+  try {
+    const { user_id, date } = req.params;
+
+    const result = await getQuestionAndAnswerService(user_id, date);
+
+    res.status(200).success(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).error(error);
+  }
+};
+
 //7 답변 쓰기
 const handleAddAnswer = async (req, res, next) => {
   const { question_id } = req.params;
@@ -104,4 +118,5 @@ module.exports = {
   handleGetUserQuestionStatusByUserId,
   handleAddAnswer,
   handleAddQuestion,
+  handleGetUserQuestionAnswerByUserIdAndDate,
 };

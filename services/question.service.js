@@ -9,6 +9,10 @@ const { getQuestionById } = require("../repositories/question.repository");
 const questionRepository = require("../repositories/question.repository");
 const { InvalidInputError } = require("../errors");
 const logger = require("../logger");
+const {
+  getQuestionByUserIdAndDate,
+  getAnswerByQuestionId,
+} = require("../repositories/answer.repository");
 
 const validDate = (date, next) => {
   const dateRegex = /^(19|20)\d\d(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
@@ -91,8 +95,33 @@ const addQuestionService = async (
   return questions;
 };
 
+const getQuestionAndAnswerService = async (user_id, date) => {
+  let formattedDate = "";
+  const isValidDate = validDate(date, next);
+  if (!isValidDate) {
+    throw new InvalidInputError("date 입력 형식이 잘못되었습니다");
+  } else {
+    formattedDate = isValidDate;
+  }
+  const questions = await getQuestionByUserIdAndDate(user_id, formattedDate);
+
+  const questionAndAnswer = await Promise.all(
+    questions.map(async (question) => {
+      const answer = await getAnswerByQuestionId(question.question_id);
+      return {
+        question_id: question.question_id,
+        question_content: question.content,
+        answer: answer,
+      };
+    })
+  );
+
+  return questionAndAnswer;
+};
+
 module.exports = {
   validDate,
   addAnswerService,
   addQuestionService,
+  getQuestionAndAnswerService,
 };

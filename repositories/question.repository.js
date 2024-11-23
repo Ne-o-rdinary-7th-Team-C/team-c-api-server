@@ -1,7 +1,7 @@
 const db = require("../models");
 
 const { Question, Answer, User } = db;
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const getAllQuestions = async () => {
   const result = await Question.findAll();
@@ -23,6 +23,7 @@ const getQuestionByUserIdAndDate = async (userId, date) => {
       questioned_user_id: userId,
       assigned_date: date,
     },
+    raw: true,
   });
   return result;
 };
