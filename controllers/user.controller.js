@@ -587,7 +587,7 @@ const login = async (req, res, next) => {
  */
 const getUserNickname = async (req, res, next) => {
   try {
-    const { user_id } = parseInt(req.params.user_id);
+    const user_id = parseInt(req.params.user_id);
     const user = await getUserNicknameService(user_id);
 
     if (user_id.trim() === "") {
