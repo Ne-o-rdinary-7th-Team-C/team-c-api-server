@@ -1,31 +1,29 @@
-class NotExistError extends Error {
-  errorCode = "NOT_EXIST";
-
-  constructor(reason, data) {
+class CustomError extends Error {
+  constructor(reason, data, errorCode, statusCode) {
     super(reason);
-    this.reason = reason;
-    this.data = data;
+    this.reason = reason; // 에러 메시지
+    this.data = data; // 추가 데이터
+    this.errorCode = errorCode; // 에러 코드 (예: "NOT_EXIST")
+    this.statusCode = statusCode; // HTTP 상태 코드 (예: 404)
   }
 }
 
-class AlreadyExistError extends Error {
-  errorCode = "ALREADY_EXIST";
-
-  constructor(reason, data) {
-    super(reason);
-    this.reason = reason;
-    this.data = data;
+class NotExistError extends CustomError {
+  constructor(reason, data = null) {
+    super(reason, data, "NOT_EXIST", 404); // 404: Not Found
   }
 }
 
-class InvalidInputError extends Error {
-  errorCode = "INVALID_INPUT";
-
-  constructor(reason, data) {
-    super(reason);
-    this.reason = reason;
-    this.data = data;
+class AlreadyExistError extends CustomError {
+  constructor(reason, data = null) {
+    super(reason, data, "ALREADY_EXIST", 409); // 409: Conflict
   }
 }
 
-module.exports = { NotExistError, AlreadyExistError, InvalidInputError };
+class InvalidInputError extends CustomError {
+  constructor(reason, data = null) {
+    super(reason, data, "INVALID_INPUT", 400); // 400: Bad Request
+  }
+}
+
+module.exports = { NotExistError, AlreadyExistError, InvalidInputError, CustomError };
