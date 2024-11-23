@@ -5,13 +5,17 @@ const {
   handleGetUserQuestionStatusByUserId,
   handleAddAnswer,
   handleAddQuestion,
+  handleGetUserQuestionAnswerByUserIdAndDate,
 } = require("../controllers/question.controller");
 
 const router = express.Router();
 
 router.get("/", handleGetMainPageCalendarEvents);
 router.get("/view/user/:user_id", handleGetUserQuestionStatusByUserId);
-router.get("/view/user/:user_id/date/:date");
+router.get(
+  "/view/user/:user_id/date/:date",
+  handleGetUserQuestionAnswerByUserIdAndDate
+);
 router.get("/:date", handleGetMessageByUserIdAndDate);
 
 //답변 작성

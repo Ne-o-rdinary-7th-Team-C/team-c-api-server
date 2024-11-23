@@ -1,7 +1,7 @@
 const db = require("../models");
 
 const { Question, Answer, User } = db;
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const axios = require("axios");
 const { API_KEY } = require("../config.json");
@@ -25,6 +25,7 @@ const getQuestionByUserIdAndDate = async (userId, date) => {
       questioned_user_id: userId,
       assigned_date: date,
     },
+    raw: true,
   });
 
   if (result.length === 0) {
