@@ -19,6 +19,79 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config.json");
 
 //로그인 ID 중복 확인 컨트롤러
+/**
+ * @swagger
+ * /user/validate-id:
+ *   post:
+ *     summary: 로그인 ID의 중복을 확인합니다.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - loginId
+ *             properties:
+ *               loginId:
+ *                 type: string
+ *                 example: "john_doe"
+ *     responses:
+ *       200:
+ *         description: ID 중복 확인 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     isValid:
+ *                       type: boolean
+ *                       description: ID 사용 가능 여부
+ *                       example: true
+ *       400:
+ *         description: 잘못된 요청 - 로그인 ID가 제공되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INVALID_INPUT"
+ *                     reason:
+ *                       type: string
+ *                       example: "로그인 ID가 제공되지 않았습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INTERNAL_SERVER_ERROR"
+ *                     reason:
+ *                       type: string
+ *                       example: "서버 오류가 발생했습니다."
+ */
 const validateIdController = async (req, res, next) => {
   logger.info("validateIdController 실행됨");
 
@@ -34,6 +107,94 @@ const validateIdController = async (req, res, next) => {
 };
 
 //회원가입 컨트롤러
+/**
+ * @swagger
+ * /user/register:
+ *   post:
+ *     summary: 새로운 사용자를 등록합니다.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - loginId
+ *               - password
+ *             properties:
+ *               loginId:
+ *                 type: string
+ *                 example: "john_doe"
+ *               password:
+ *                 type: string
+ *                 example: "securePassword123"
+ *     responses:
+ *       200:
+ *         description: 사용자 등록 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: integer
+ *                       example: 1
+ *                     loginId:
+ *                       type: string
+ *                       example: "john_doe"
+ *                     nickname:
+ *                       type: string
+ *                       example: "John"
+ *                     color:
+ *                       type: string
+ *                       example: "#FF5733"
+ *                     token:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: 잘못된 입력 - 로그인 ID 또는 비밀번호가 제공되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INVALID_INPUT"
+ *                     reason:
+ *                       type: string
+ *                       example: "로그인 ID 또는 비밀번호가 제공되지 않았습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INTERNAL_SERVER_ERROR"
+ *                     reason:
+ *                       type: string
+ *                       example: "서버 오류가 발생했습니다."
+ */
 const registerUserController = async (req, res, next) => {
   logger.info("registerUserController 실행됨");
 
@@ -60,6 +221,108 @@ const registerUserController = async (req, res, next) => {
 };
 
 //별명 및 색상 설정 컨트롤러
+/**
+ * @swagger
+ * /user/update:
+ *   put:
+ *     summary: 사용자의 별명과 색상을 업데이트합니다.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nickname
+ *               - color
+ *             properties:
+ *               nickname:
+ *                 type: string
+ *                 example: "Johnny"
+ *               color:
+ *                 type: string
+ *                 example: "#33FF57"
+ *     responses:
+ *       200:
+ *         description: 사용자 정보 업데이트 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: integer
+ *                       example: 1
+ *                     nickname:
+ *                       type: string
+ *                       example: "Johnny"
+ *                     color:
+ *                       type: string
+ *                       example: "#33FF57"
+ *       400:
+ *         description: 잘못된 입력 - 별명 또는 색상이 제공되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INVALID_INPUT"
+ *                     reason:
+ *                       type: string
+ *                       example: "별명 또는 색상이 제공되지 않았습니다."
+ *       401:
+ *         description: 인증 오류 - 토큰이 없거나 만료됨
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "UNAUTHORIZED"
+ *                     reason:
+ *                       type: string
+ *                       example: "토큰이 없거나 만료되었습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INTERNAL_SERVER_ERROR"
+ *                     reason:
+ *                       type: string
+ *                       example: "서버 오류가 발생했습니다."
+ */
 const updateUserController = async (req, res, next) => {
   console.log("updateUserController 실행됨");
   const userId = req.user.user_id;
@@ -75,6 +338,112 @@ const updateUserController = async (req, res, next) => {
   }
 };
 
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: 사용자가 로그인합니다.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - login_id
+ *               - password
+ *             properties:
+ *               login_id:
+ *                 type: string
+ *                 example: "john_doe"
+ *               password:
+ *                 type: string
+ *                 example: "securePassword123"
+ *     responses:
+ *       200:
+ *         description: 로그인 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: integer
+ *                       example: 1
+ *                     login_id:
+ *                       type: string
+ *                       example: "john_doe"
+ *                     nickname:
+ *                       type: string
+ *                       example: "John"
+ *                     color:
+ *                       type: string
+ *                       example: "#FF5733"
+ *                     token:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: 잘못된 입력 - 로그인 ID 또는 비밀번호가 제공되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INVALID_INPUT"
+ *                     reason:
+ *                       type: string
+ *                       example: "로그인 ID 또는 비밀번호가 없습니다."
+ *       401:
+ *         description: 인증 실패 - 로그인 ID 또는 비밀번호가 틀렸음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "UNAUTHORIZED"
+ *                     reason:
+ *                       type: string
+ *                       example: "로그인 ID 또는 비밀번호가 틀렸습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INTERNAL_SERVER_ERROR"
+ *                     reason:
+ *                       type: string
+ *                       example: "서버 오류가 발생했습니다."
+ */
 const login = async (req, res, next) => {
   const { login_id, password } = req.body;
 
@@ -114,6 +483,91 @@ const login = async (req, res, next) => {
   }
 };
 
+/**
+ * @swagger
+ * /user/nickname/{user_id}:
+ *   get:
+ *     summary: 특정 사용자의 별명을 조회합니다.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: 조회할 사용자의 ID
+ *     responses:
+ *       200:
+ *         description: 별명 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     nickname:
+ *                       type: string
+ *                       example: "John"
+ *       400:
+ *         description: 잘못된 요청 - 사용자 ID가 유효하지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INVALID_INPUT"
+ *                     reason:
+ *                       type: string
+ *                       example: "잘못된 요청입니다."
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "USER_NOT_FOUND"
+ *                     reason:
+ *                       type: string
+ *                       example: "사용자를 찾을 수 없습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     errorCode:
+ *                       type: string
+ *                       example: "INTERNAL_SERVER_ERROR"
+ *                     reason:
+ *                       type: string
+ *                       example: "서버 오류가 발생했습니다."
+ */
 const getUserNickname = async (req, res, next) => {
   try {
     let { user_id } = req.params;

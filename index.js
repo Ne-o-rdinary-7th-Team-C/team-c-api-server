@@ -12,12 +12,15 @@ const {
   responseHandler,
   parseBearerFromHeader,
   decodeToken,
+  swaggerHandler,
 } = require("./handlers");
 
 // 라우터
 const userRouter = require("./routes/user.route");
 const questionRouter = require("./routes/question.router");
 const answerRouter = require("./routes/answer.route");
+
+const swaggerUiExpress = require("swagger-ui-express");
 
 const app = express();
 
@@ -34,6 +37,20 @@ app.use(decodeToken); // req.token을 해독하여 req.user에 저장
 app.use("/questions", questionRouter);
 app.use("/answers", answerRouter);
 app.use("/user", userRouter);
+
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup(
+    {},
+    {
+      swaggerOptions: {
+        url: "/openapi.json",
+      },
+    }
+  )
+);
+app.get("/openapi.json", swaggerHandler);
 
 // Error handler는 최하단에 위치해야 합니다.
 // 하단 코드를 건들지 마세요.
