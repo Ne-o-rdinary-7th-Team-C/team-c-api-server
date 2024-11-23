@@ -38,6 +38,10 @@ const registerUserController = async (req, res, next) => {
   logger.info("registerUserController 실행됨");
 
   const { loginId, password } = req.body;
+
+  if ( loginId.trim() === "" || password.trim() === "") {
+    return next(new InvalidInputError("아이디와 패스워드를 입력하세요."))
+  } 
   try {
     await validateId(loginId);
     //response에는 등록한 user가 담김
@@ -64,6 +68,10 @@ const updateUserController = async (req, res, next) => {
   console.log("updateUserController 실행됨");
   const userId = req.user.user_id;
   const { color, nickname } = req.body;
+
+  if ( color.trim() === ""||nickname.trim()==="") {
+    return next(new InvalidInputError("색상과 닉네임을 입력해주세요"))
+  } 
   try {
     //response에는 업데이트한 user가 담김
     // 한번에 repository 접근함 ; convention에 어긋나지만 일단 유지
