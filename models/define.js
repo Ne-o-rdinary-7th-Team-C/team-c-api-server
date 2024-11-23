@@ -125,6 +125,10 @@ class Answer extends Model {
           type: DataTypes.STRING(1024),
           allowNull: false,
         },
+        img_url: {
+          type: DataTypes.STRING(1024),
+          allowNull: false,
+        },
         created_at: {
           type: DataTypes.DATE(6),
           defaultValue: DataTypes.NOW,

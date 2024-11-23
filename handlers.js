@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const logger = require("./logger");
 const { JWT_SECRET } = require("./config.json");
+const swaggerAutogen = require("swagger-autogen");
 
 const parseBearerFromHeader = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -55,9 +56,104 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
+const swaggerHandler = async (req, res, next) => {
+  // #swagger.ignore = true
+  const options = {
+    openapi: "3.1.0",
+    disableLogs: true,
+    writeOutputFile: false,
+  };
+
+  const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
+  const routes = ["./routes/*.js", "./controllers/*.js"];
+  const doc = {
+    info: {
+      title: "Ne(o)rdinary Hackathon: Team C",
+      description: "감사합니다.",
+      contact: {
+        name: "Team C",
+        email: "saveearth1@cau.ac.kr",
+        url: "https://github.com/Ne-o-rdinary-7th-Team-C",
+      },
+      license: {
+        name: "MIT",
+        url: "https://opensource.org/licenses/MIT",
+      },
+    },
+    // 서버 정보
+    servers: [
+      {
+        url: "https://test2.shop",
+        description: "AWS EC2 서버",
+      },
+    ],
+
+    // 보안 설정
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+    components: {
+      // 인증 스키마
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+
+      // 공통 응답 스키마
+      schemas: {
+        Success: {
+          type: "object",
+          properties: {
+            resultType: {
+              type: "string",
+              description: "결과 타입",
+            },
+            success: {
+              type: "object",
+              description: "성공 데이터",
+            },
+          },
+        },
+        Error: {
+          type: "object",
+          properties: {
+            errorCode: {
+              type: "string",
+              description: "에러 코드",
+            },
+            reason: {
+              type: "string",
+              description: "에러 사유",
+            },
+            data: {
+              type: "object",
+              description: "에러 데이터",
+            },
+          },
+        },
+      },
+    },
+
+    // 외부 문서
+    externalDocs: {
+      description: "GitHub Repository",
+      url: "https://github.com/UMC-7th-CAU-NodeJS/umc-7-kyeoungwoon",
+    },
+  };
+
+  const result = await swaggerAutogen(options)(outputFile, routes, doc);
+  res.json(result ? result.data : null);
+};
+
 module.exports = {
   parseBearerFromHeader,
   decodeToken,
   responseHandler,
   errorHandler,
+  swaggerHandler,
 };

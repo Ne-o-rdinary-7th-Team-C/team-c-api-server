@@ -5,6 +5,7 @@ const { Op, where } = require("sequelize");
 
 const axios = require("axios");
 const { API_KEY } = require("../config.json");
+const { InvalidInputError } = require("../errors");
 const getAllQuestions = async () => {
   const result = await Question.findAll();
   return result;
@@ -42,7 +43,7 @@ const getQuestionsInDecemberByUserId = async (userId) => {
     where: {
       questioned_user_id: userId,
       assigned_date: {
-        [Op.between]: ["2021-12-01", "2021-12-31"],
+        [Op.between]: ["2024-12-01", "2024-12-31"], // 날짜 DB에 맞게 수정
       },
     },
   });
@@ -58,10 +59,11 @@ const createAnswer = async (question_id, questioned_user_id, content) => {
 };
 
 const createAiQuestion = async (assigned_date) => {
-  console.log(API_KEY);
   const apiKey = API_KEY;
   const prompt = "질문 만들어줘";
-
+  if (!apiKey) {
+    throw new InvalidInputError("GPT API 값이 입력되지 않았습니다");
+  }
   const messages = [
     {
       role: "system",
@@ -77,8 +79,8 @@ const createAiQuestion = async (assigned_date) => {
   const result = await axios.post(
     "https://api.openai.com/v1/chat/completions",
     {
-      model: "gpt-3.5-turbo", //gpt 모델 설정
-      temperature: 0.7, //대답 창의성 (0~1)
+      model: "gpt-4o", //gpt 모델 설정
+      temperature: 1, //대답 창의성 (0~1)
       messages: messages,
     },
     {
