@@ -60,8 +60,6 @@ const validDate = (date, next) => {
 };
 
 const addAnswerService = async (question_id, questioned_user_id, content) => {
-  // 비즈니스 로직 추가 가능 (예: 유효성 검사)
-
   if (!getQuestionById(question_id)) {
     throw new Error("존재하지않는 질문입니다.");
   }

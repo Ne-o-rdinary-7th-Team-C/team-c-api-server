@@ -3,7 +3,7 @@ const {
   getQuestionsInDecemberByUserId,
 } = require("../repositories/question.repository");
 const logger = require("../logger");
-const { InvalidInputError } = require("../errors");
+const { InvalidInputError, UnauthorizedError } = require("../errors");
 const {
   validDate,
   addAnswerService,
@@ -11,7 +11,11 @@ const {
   getQuestionAndAnswerService,
 } = require("../services/question.service");
 
-const handleGetMainPageCalendarEvents = async (req, res) => {
+const handleGetMainPageCalendarEvents = async (req, res, next) => {
+  if (!req.user) {
+    next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
+    return;
+  }
   // TODO
   const result = await getQuestionsInDecemberByUserId(req.user.user_id);
   logger.info(`Get all questions: ${JSON.stringify(result)}`);
@@ -19,6 +23,10 @@ const handleGetMainPageCalendarEvents = async (req, res) => {
 };
 
 const handleGetMessageByUserIdAndDate = async (req, res, next) => {
+  if (!req.user) {
+    next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
+    return;
+  }
   const { date } = req.params;
 
   let formattedDate = "";
@@ -62,6 +70,10 @@ const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
 const handleGetUserQuestionAnswerByUserIdAndDate = async (req, res, next) => {
   try {
     const { user_id, date } = req.params;
+    if (!user_id || !date) {
+      next(new InvalidInputError("아이디와 날짜가 입력되지 않았습니다"));
+      return;
+    }
 
     const result = await getQuestionAndAnswerService(user_id, date, next);
 
@@ -74,10 +86,18 @@ const handleGetUserQuestionAnswerByUserIdAndDate = async (req, res, next) => {
 
 //7 답변 쓰기
 const handleAddAnswer = async (req, res, next) => {
+  if (!req.user) {
+    next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
+    return;
+  }
   const { question_id } = req.params;
   const { content } = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
   const questioned_user_id = req.user.user_id; // 현재 로그인한 사용자의 ID
 
+  if (!question_id || content) {
+    next(new InvalidInputError("질문 아이디와 내용이 전달되지 않았습니다 "));
+    return;
+  }
   try {
     const answer = await addAnswerService(
       question_id,
@@ -95,7 +115,10 @@ const handleAddAnswer = async (req, res, next) => {
 const handleAddQuestion = async (req, res, next) => {
   const { questioned_user_id, author_nickname, assigned_date, content } =
     req.body;
-
+  if (!questioned_user_id || !author_nickname || !assigned_date || !content) {
+    next(new InvalidInputError("필요한 값이 입력되지 않았습니다"));
+    return;
+  }
   try {
     const question = await addQuestionService(
       questioned_user_id,
