@@ -586,18 +586,12 @@ const login = async (req, res, next) => {
  *                       example: "서버 오류가 발생했습니다."
  */
 const getUserNickname = async (req, res, next) => {
-  if (!req.user) {
-    return next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
-  }
   try {
-    const { user_id } = req.user.user_id;
-    user_id = parseInt(user_id);
+    const user_id = parseInt(req.params.user_id);
+
+    console.log("user_id", user_id);
     const user = await getUserNicknameService(user_id);
 
-    if (user_id.trim() === "") {
-      //입력한 닉네임이 공백인 경우
-      return next(new InvalidInputError("공백을 입력할 수 없습니다"));
-    }
     if (user) {
       return res.status(200).success(user);
     } else {
