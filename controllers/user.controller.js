@@ -36,12 +36,13 @@ const registerUserController = async (req, res, next) => {
 
   const { loginId, password } = req.body;
   try {
+    await validateId(loginId);
     //response에는 등록한 user가 담김
     const response = await registerUser({ loginId, password });
     res.status(200).success(response);
   } catch (error) {
     logger.error(`Internal Server Error: ${error}`);
-    next(error);
+    return next(error);
   }
 };
 

@@ -23,8 +23,6 @@ const validateId = async (loginId) => {
   return loginId;
 };
 const registerUser = async (data) => {
-  validateId(data.loginId); // 중복된 아이디가 있는지 확인
-
   const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
   // 해싱된 비밀번호로 newUser 저장
   const newUser = {
