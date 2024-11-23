@@ -10,7 +10,7 @@ const { validDate } = require("../services/question.service");
 
 const handleGetMainPageCalendarEvents = async (req, res) => {
   // TODO
-  const result = await getAllQuestionsByUserId(req.user.user_id);
+  const result = await getQuestionsInDecemberByUserId(req.user.user_id);
   logger.info(`Get all questions: ${JSON.stringify(result)}`);
   res.status(200).success(result);
 };
@@ -35,7 +35,7 @@ const handleGetMessageByUserIdAndDate = async (req, res, next) => {
 };
 
 const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
-  const user_id = req.query.userid;
+  const { user_id } = req.params;
   if (!user_id) {
     logger.error(`User Id가 전달되지 않았음: ${user_id}`);
     next(new InvalidInputError("User Id가 전달되지 않았습니다."));
@@ -44,7 +44,7 @@ const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
 
   const result = await getQuestionsInDecemberByUserId(user_id);
   logger.info(
-    `User_id에 따른 12월달의 이벤트를 모두 가져옵니다: ${result.length}`
+    `User_id에 따른 12월달의 이벤트를 모두 가져옵니다: ${result.length}개`
   );
   const questionStatus = new Array(31).fill(0);
   result.map((q) => {

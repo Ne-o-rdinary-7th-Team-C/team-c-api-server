@@ -18,7 +18,7 @@ const questionRouter = require("./routes/question.router");
 
 const app = express();
 
-app.use(responseHandler);
+app.use(responseHandler); //  요청, 응답 핸들링 미들웨어
 
 app.use(cors());
 app.use(express.json());
