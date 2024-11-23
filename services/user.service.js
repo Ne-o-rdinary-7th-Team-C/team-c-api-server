@@ -12,9 +12,9 @@ const bcrypt = require("bcrypt"); // bcrypt 사용
 const { SALT_ROUNDS } = require("../config.json");
 
 const validateId = async (loginId) => {
-  if ( userId === "" || password === "") {
-    throw new InvalidInputError("아이디와 패스워드를 입력하세요.")
-  } console.log(3)
+  if ( loginId === "") {
+    throw new InvalidInputError("공백은 입력 불가능합니다")
+  } 
 
   // loginId를 DB에서 검색해 isValidate에 담음
   const isValidate = await getUserByLoginId(loginId);
