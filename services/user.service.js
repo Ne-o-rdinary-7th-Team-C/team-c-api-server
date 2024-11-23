@@ -2,25 +2,28 @@ const UserLoginRepository = require('../repositories/user.repository');
 const UserRepository = require('../repositories/user.repository');
 const bcrypt = require('bcrypt'); // bcrypt 사용
 
-class UserLoginService {
-  static async login(login_id, password) {
-    // login_id로 사용자 검색
+const loginService = async (login_id, password) => {
     const user = await UserLoginRepository.findByLoginId(login_id);
 
     if (!user) {
-      return null; // 사용자 없음
+        return null; // 사용자 없음
     }
 
-    // 입력된 비밀번호와 저장된 해시된 비밀번호 비교
     const isPasswordValid = bcrypt.compareSync(password, user.password);
 
     if (!isPasswordValid) {
-      return null; // 비밀번호 불일치
+        return null; // 비밀번호 불일치
     }
 
-    // 로그인 성공 시 사용자 반환
     return user;
-  }
-}
+};
 
-module.exports = UserLoginService;
+const getUserNicknameService = async (user_id) => {
+    const user = await UserRepository.findNicknameById(user_id);
+    return user;
+};
+
+module.exports = {
+    loginService,
+    getUserNicknameService,
+};
