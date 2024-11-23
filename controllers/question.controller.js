@@ -1,6 +1,4 @@
 const {
-  getAllQuestions,
-  getAllQuestionsByUserId,
   getQuestionByUserIdAndDate,
   getQuestionsInDecemberByUserId,
 } = require("../repositories/question.repository");
