@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # 애플리케이션 포트 설정
-EXPOSE 7777
+EXPOSE 9999
 
 # 애플리케이션 실행
 CMD ["node", "index.js"] 
