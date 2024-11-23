@@ -6,7 +6,7 @@ const loginService = async (login_id, password) => {
     const user = await UserLoginRepository.findByLoginId(login_id);
 
     if (!user) {
-        return null; // 사용자 없음
+        return null; // 사용자 없음 
     }
 
     const isPasswordValid = bcrypt.compareSync(password, user.password);
