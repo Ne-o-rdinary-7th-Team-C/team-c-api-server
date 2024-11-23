@@ -1,18 +1,20 @@
 const questionService = require('../services/question.service');
 
-//7 답변 쓰기
 const addAnswer = async (req, res) => {
     const { question_id } = req.params;
-    const {questioned_user_id, content} = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
+    const { questioned_user_id, content } = req.body;
 
     try {
         const answer = await questionService.addAnswer(question_id, questioned_user_id, content);
-        res.status(201).json(answer);
+        // 성공 응답
+        res.success(answer);
     } catch (error) {
-        
-        res.status(400).json({ error: error.message });
+        console.error("Error in addAnswer:", error);
+        // 에러 응답
+        res.error({ reason: error.message });
     }
 };
+
 //밥먹고와서 여기부터
 
 
