@@ -70,6 +70,10 @@ class Question extends Model {
           type: DataTypes.STRING(2048),
           allowNull: false,
         },
+        assigned_date: {
+          type: DataTypes.DATEONLY,
+          allowNull: false,
+        },
         created_at: {
           type: DataTypes.DATE(6),
           defaultValue: DataTypes.NOW,
