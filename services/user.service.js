@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const userRepository = require("../repositories/user.repository");
+const { NotExistError, AlreadyExistError } = require("../error");
 
 const validateId = async (loginId) => {
   //loginId를 DB에서 검색해 isValidate에 담음
@@ -7,7 +8,7 @@ const validateId = async (loginId) => {
 
   //isValidate가 있다면 이미 있는 아이디
   if (isValidate) {
-    throw new Error("이미 존재하는 아이디입니다");
+    throw new AlreadyExistError("이미 존재하는 아이디입니다");
   }
   //없다면 요청한 loginId를 리턴한다
   return loginId;
@@ -30,7 +31,7 @@ const registerUser = async (data) => {
 
   if (!registerUserId) {
     //존재하는 유저라면
-    throw new Error("이미 존재하는 아이디(이메일)입니다");
+    throw new AlreadyExistError("이미 존재하는 아이디(이메일)입니다");
   }
 
   const user = await userRepository.getUserById(registerUserId);
@@ -43,7 +44,7 @@ const updateUser = async (data) => {
   const user = await userRepository.getUserById(data.userId);
 
   if (!user) {
-    throw new Error("존재하지 않는 유저입니다");
+    next(new NotExistError("존재하지 않는 유저입니다"));
   }
   const updatedUser = await userRepository.updateUser(data);
 
