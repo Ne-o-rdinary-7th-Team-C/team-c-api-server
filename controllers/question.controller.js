@@ -63,7 +63,7 @@ const handleGetUserQuestionAnswerByUserIdAndDate = async (req, res, next) => {
   try {
     const { user_id, date } = req.params;
 
-    const result = await getQuestionAndAnswerService(user_id, date);
+    const result = await getQuestionAndAnswerService(user_id, date, next);
 
     res.status(200).success(result);
   } catch (error) {

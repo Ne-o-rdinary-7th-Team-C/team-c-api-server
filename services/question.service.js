@@ -5,14 +5,14 @@
 // module.exports = { handleGetMainPageCalendarEvents };
 
 const { getUserById } = require("../repositories/question.repository");
-const { getQuestionById } = require("../repositories/question.repository");
+const {
+  getQuestionById,
+  getQuestionByUserIdAndDate,
+} = require("../repositories/question.repository");
 const questionRepository = require("../repositories/question.repository");
 const { InvalidInputError } = require("../errors");
 const logger = require("../logger");
-const {
-  getQuestionByUserIdAndDate,
-  getAnswerByQuestionId,
-} = require("../repositories/answer.repository");
+const { getAnswerByQuestionId } = require("../repositories/answer.repository");
 
 const validDate = (date, next) => {
   const dateRegex = /^(19|20)\d\d(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/;
@@ -97,7 +97,7 @@ const addQuestionService = async (
   return questions;
 };
 
-const getQuestionAndAnswerService = async (user_id, date) => {
+const getQuestionAndAnswerService = async (user_id, date, next) => {
   let formattedDate = "";
   const isValidDate = validDate(date, next);
   if (!isValidDate) {

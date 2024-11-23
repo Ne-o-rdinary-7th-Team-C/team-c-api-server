@@ -8,7 +8,6 @@ class NotExistError extends Error {
     this.data = data;
   }
 }
-
 class AlreadyExistError extends Error {
   errorCode = "ALREADY_EXIST";
   statusCode = 409;
