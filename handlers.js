@@ -83,8 +83,8 @@ const swaggerHandler = async (req, res, next) => {
     // 서버 정보
     servers: [
       {
-        url: "https://test2.shop",
-        description: "AWS EC2 서버",
+        url: "https://umc.skyofseoul.synology.me",
+        description: "Server",
       },
     ],
 
@@ -103,6 +103,21 @@ const swaggerHandler = async (req, res, next) => {
           bearerFormat: "JWT",
         },
       },
+
+      tags: [
+        {
+          name: "Users",
+          description: "사용자 관리 API",
+        },
+        {
+          name: "Questions",
+          description: "질문 관리 API",
+        },
+        {
+          name: "Answers",
+          description: "답변 관리 API",
+        },
+      ],
 
       // 공통 응답 스키마
       schemas: {
