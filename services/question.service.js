@@ -62,6 +62,8 @@ const addAnswerService = async (question_id, questioned_user_id, content) => {
     throw new Error("존재하지않는 질문입니다.");
   }
 
+  question_id = parseInt(question_id, 10);
+
   const answer = await questionRepository.createAnswer(
     question_id,
     questioned_user_id,
