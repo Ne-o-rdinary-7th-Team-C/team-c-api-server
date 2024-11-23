@@ -43,7 +43,7 @@ const getQuestionsInDecemberByUserId = async (userId) => {
     where: {
       questioned_user_id: userId,
       assigned_date: {
-        [Op.between]: ["2024-11-01", "2024-12-31"], // 날짜 DB에 맞게 수정
+        [Op.between]: ["2024-12-01", "2024-12-31"], // 날짜 DB에 맞게 수정
       },
     },
   });
