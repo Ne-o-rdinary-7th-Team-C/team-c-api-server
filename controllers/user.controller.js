@@ -590,7 +590,7 @@ const getUserNickname = async (req, res, next) => {
     return next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
   }
   try {
-    const { user_id } = req.user.user_id;
+    let { user_id } = req.user.user_id;
     user_id = parseInt(user_id);
     const user = await getUserNicknameService(user_id);
 
