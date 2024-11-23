@@ -588,12 +588,10 @@ const login = async (req, res, next) => {
 const getUserNickname = async (req, res, next) => {
   try {
     const user_id = parseInt(req.params.user_id);
+
+    console.log("user_id", user_id);
     const user = await getUserNicknameService(user_id);
 
-    if (user_id.trim() === "") {
-      //입력한 닉네임이 공백인 경우
-      return next(new InvalidInputError("공백을 입력할 수 없습니다"));
-    }
     if (user) {
       return res.status(200).success(user);
     } else {
