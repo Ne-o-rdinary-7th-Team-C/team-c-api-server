@@ -199,6 +199,10 @@ const registerUserController = async (req, res, next) => {
   logger.info("registerUserController 실행됨");
 
   const { loginId, password } = req.body;
+
+  if (loginId.trim() === "" || password.trim() === "") {
+    return next(new InvalidInputError("아이디와 패스워드를 입력하세요."));
+  }
   try {
     await validateId(loginId);
     //response에는 등록한 user가 담김
@@ -324,9 +328,15 @@ const registerUserController = async (req, res, next) => {
  *                       example: "서버 오류가 발생했습니다."
  */
 const updateUserController = async (req, res, next) => {
-  console.log("updateUserController 실행됨");
+  if (!req.user) {
+    return next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
+  }
   const userId = req.user.user_id;
   const { color, nickname } = req.body;
+
+  if (color.trim() === "" || nickname.trim() === "") {
+    return next(new InvalidInputError("색상과 닉네임을 입력해주세요"));
+  }
   try {
     //response에는 업데이트한 user가 담김
     // 한번에 repository 접근함 ; convention에 어긋나지만 일단 유지
@@ -449,9 +459,16 @@ const login = async (req, res, next) => {
 
   logger.info(`로그인 요청: ${login_id}`);
 
+  if (login_id.trim() === "" || password.trim() === "") {
+    // 로그인 ID 또는 비밀번호가 공백일 경우
+    return next(new InvalidInputError("공백을 입력할 수 없습니다"));
+  }
+
   if (!login_id || !password) {
     // 로그인 ID 또는 비밀번호가 없을 경우
-    return next(new InvalidInputError("로그인 ID 또는 비밀번호가 없습니다."));
+    return next(
+      new InvalidInputError("로그인 ID 또는 비밀번호가 존재하지 않습니다")
+    );
   }
   try {
     const user = await loginService(login_id, password);
@@ -569,12 +586,18 @@ const login = async (req, res, next) => {
  *                       example: "서버 오류가 발생했습니다."
  */
 const getUserNickname = async (req, res, next) => {
+  if (!req.user) {
+    return next(new UnauthorizedError("토큰이 없거나 만료되었습니다"));
+  }
   try {
-    let { user_id } = req.params;
+    const { user_id } = req.user.user_id;
     user_id = parseInt(user_id);
-    if (!user_id) return next(new InvalidInputError("잘못된 요청입니다."));
-
     const user = await getUserNicknameService(user_id);
+
+    if (user_id.trim() === "") {
+      //입력한 닉네임이 공백인 경우
+      return next(new InvalidInputError("공백을 입력할 수 없습니다"));
+    }
     if (user) {
       return res.status(200).success(user);
     } else {

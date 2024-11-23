@@ -6,12 +6,16 @@ const {
   updateUser,
 } = require("../repositories/user.repository");
 
-const { AlreadyExistError } = require("../errors");
+const { AlreadyExistError, InvalidInputError } = require("../errors");
 
 const bcrypt = require("bcrypt"); // bcrypt 사용
 const { SALT_ROUNDS } = require("../config.json");
 
 const validateId = async (loginId) => {
+  if ( loginId === "") {
+    throw new InvalidInputError("공백은 입력 불가능합니다")
+  } 
+
   // loginId를 DB에서 검색해 isValidate에 담음
   const isValidate = await getUserByLoginId(loginId);
 
@@ -19,6 +23,9 @@ const validateId = async (loginId) => {
   if (isValidate) {
     throw new AlreadyExistError("이미 존재하는 아이디입니다");
   }
+
+  
+
   // 없다면 요청한 loginId를 리턴한다
   return loginId;
 };
