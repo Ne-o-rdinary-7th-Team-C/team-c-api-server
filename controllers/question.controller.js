@@ -416,10 +416,11 @@ const handleAddAnswer = async (req, res, next) => {
   const { content } = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
   const questioned_user_id = req.user.user_id; // 현재 로그인한 사용자의 ID
 
-  if (!question_id || content) {
+  if (!question_id || !content) {
     next(new InvalidInputError("질문 아이디와 내용이 전달되지 않았습니다 "));
     return;
   }
+  console
   try {
     const answer = await addAnswerService(
       question_id,

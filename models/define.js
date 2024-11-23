@@ -127,7 +127,7 @@ class Answer extends Model {
         },
         img_url: {
           type: DataTypes.STRING(1024),
-          allowNull: false,
+          allowNull: true,
         },
         created_at: {
           type: DataTypes.DATE(6),
