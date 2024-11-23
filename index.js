@@ -1,14 +1,23 @@
-const db = require("./models");
+const express = require("express");
+const cors = require("cors");
+const logger = require("./logger");
 
-db.User.create({
-  login_id: "test",
-  password: "test",
-  color: "#000000",
-  nickname: "테스트",
-})
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+const morgan = require("morgan");
+
+const cookieParser = require("cookie-parser");
+
+const { PORT } = require("./config.json");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(morgan("dev"));
+
+app.use("/question", require("./routes/user"));
+
+app.listen(PORT, () => {
+  logger.info(`Server is running on port ${PORT}`);
+});
