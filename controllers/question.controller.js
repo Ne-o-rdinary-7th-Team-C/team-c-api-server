@@ -1,34 +1,106 @@
-const questionService = require('../services/question.service');
+const {
+  getAllQuestions,
+  getAllQuestionsByUserId,
+  getQuestionByUserIdAndDate,
+  getQuestionsInDecemberByUserId,
+} = require("../repositories/question.repository");
+const logger = require("../logger");
+const { InvalidInputError } = require("../errors");
+const {
+  validDate,
+  addAnswerService,
+  addQuestionService,
+} = require("../services/question.service");
+
+const handleGetMainPageCalendarEvents = async (req, res) => {
+  // TODO
+  const result = await getQuestionsInDecemberByUserId(req.user.user_id);
+  logger.info(`Get all questions: ${JSON.stringify(result)}`);
+  res.status(200).success(result);
+};
+
+const handleGetMessageByUserIdAndDate = async (req, res, next) => {
+  const { date } = req.params;
+
+  let formattedDate = "";
+  const isValidDate = validDate(date, next);
+  if (!isValidDate) {
+    return;
+  } else {
+    formattedDate = isValidDate;
+  }
+
+  const result = await getQuestionByUserIdAndDate(
+    req.user.user_id,
+    formattedDate
+  );
+  logger.info(`Get question by user id and date: ${JSON.stringify(result)}`);
+  res.status(200).success(result);
+};
+
+const handleGetUserQuestionStatusByUserId = async (req, res, next) => {
+  const { user_id } = req.params;
+  if (!user_id) {
+    logger.error(`User Id가 전달되지 않았음: ${user_id}`);
+    next(new InvalidInputError("User Id가 전달되지 않았습니다."));
+    return;
+  }
+
+  const result = await getQuestionsInDecemberByUserId(user_id);
+  logger.info(
+    `User_id에 따른 12월달의 이벤트를 모두 가져옵니다: ${result.length}개`
+  );
+  const questionStatus = new Array(31).fill(0);
+  result.map((q) => {
+    const day = parseInt(q.assigned_date.split("-")[2], 10);
+    questionStatus[day - 1] += 1;
+  });
+
+  res.status(200).success(questionStatus);
+};
 
 //7 답변 쓰기
-const addAnswer = async (req, res) => {
-    const { question_id } = req.params;
-    const {questioned_user_id, content} = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
+const handleAddAnswer = async (req, res, next) => {
+  const { question_id } = req.params;
+  const { questioned_user_id, content } = req.body; // 클라이언트로부터 답변 내용과 사용자 ID를 전달받음
 
-    try {
-        const answer = await questionService.addAnswer(question_id, questioned_user_id, content);
-        res.status(201).json(answer);
-    } catch (error) {
-        
-        res.status(400).json({ error: error.message });
-    }
+  try {
+    const answer = await addAnswerService(
+      question_id,
+      questioned_user_id,
+      content
+    );
+    res.status(201).success(answer);
+  } catch (error) {
+    logger.error(`Error: ${error}`);
+    next(error);
+  }
 };
-//밥먹고와서 여기부터
-
 
 //질문 작성
-const addQuestion = async (req, res) => {
-    const {questioned_user_id, author_nickname, assigned_date, content} = req.body;
-    
+const handleAddQuestion = async (req, res, next) => {
+  const { questioned_user_id, author_nickname, assigned_date, content } =
+    req.body;
 
-    try{
-        const question = await questionService.addQuestion(questioned_user_id, author_nickname, assigned_date, content);
-        res.status(201).json(question);
+  try {
+    const question = await addQuestionService(
+      questioned_user_id,
+      author_nickname,
+      assigned_date,
+      content
+    );
+    res.status(201).success(question);
+  } catch (error) {
+    //에러핸들링
+    logger.error(`Error: ${error}`);
+    next(error);
+  }
+};
 
-    }catch(error){
-        //에러핸들링
-        
-    }
-}
-
-module.exports = { addAnswer, addQuestion };
+module.exports = {
+  handleGetMainPageCalendarEvents,
+  handleGetMessageByUserIdAndDate,
+  handleGetUserQuestionStatusByUserId,
+  handleAddAnswer,
+  handleAddQuestion,
+};

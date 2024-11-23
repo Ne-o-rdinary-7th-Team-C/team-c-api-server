@@ -53,12 +53,13 @@ class Question extends Model {
   static init(sequelize) {
     super.init(
       {
-        question_id: { //해당 질문세트 아이디
+        question_id: {
+          //해당 질문세트 아이디
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
         },
-        questioned_user_id: { //질문 주인 아이디
+        questioned_user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
@@ -66,11 +67,11 @@ class Question extends Model {
             key: "user_id",
           },
         },
-        author_nickname: { //질문작성자 닉네임
+        author_nickname: {
           type: DataTypes.STRING(1024),
           allowNull: false,
         },
-        assigned_date: { //며칠에 기록?
+        assigned_date: {
           type: DataTypes.DATEONLY,
           allowNull: false,
         },
