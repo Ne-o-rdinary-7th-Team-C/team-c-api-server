@@ -46,6 +46,7 @@ const registerUserController = async (req, res, next) => {
       {
         user_id: response.user_id,
         nickname: response.nickname,
+        color: response.color,
         iat: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365, // 1 year in seconds
       },
       JWT_SECRET
@@ -91,6 +92,7 @@ const login = async (req, res, next) => {
         {
           user_id: user.user_id,
           nickname: user.nickname,
+          color: user.color,
           iat: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365, // 1 year in seconds
         },
         JWT_SECRET

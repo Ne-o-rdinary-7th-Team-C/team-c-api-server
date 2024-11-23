@@ -9,6 +9,10 @@ const {
 
 const router = express.Router();
 
+router.get("/", (req, res) => {
+  res.success(req.user);
+});
+
 // id 중복여부 확인
 router.post("/validation", validateIdController);
 
